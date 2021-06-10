@@ -3,11 +3,17 @@
 
 import * as React from 'react'
 
-const getEmptySquares = () => Array(9).fill(null)
+const emptySquares = Array(9).fill(null)
 
 function Board() {
   // 🐨 squares is the state for this component. Add useState for squares
-  const [squares, setSquares] = React.useState(getEmptySquares)
+  const [squares, setSquares] = React.useState(
+    () => JSON.parse(window.localStorage.getItem('squares')) || emptySquares,
+  )
+
+  React.useEffect(() => {
+    window.localStorage.setItem('squares', JSON.stringify(squares))
+  }, [squares])
 
   // 🐨 We'll need the following bits of derived state:
   // - nextValue ('X' or 'O')
@@ -42,7 +48,7 @@ function Board() {
 
   function restart() {
     // 🐨 reset the squares
-    setSquares(getEmptySquares())
+    setSquares(emptySquares)
   }
 
   function renderSquare(i) {
