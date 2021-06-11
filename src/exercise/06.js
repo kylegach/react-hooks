@@ -14,30 +14,35 @@ import {
 } from '../pokemon'
 
 function PokemonInfo({pokemonName}) {
-  // 🐨 Have state for the pokemon (null)
-  const [pokemon, setPokemon] = React.useState(null)
-  const [error, setError] = React.useState(null)
-  const [status, setStatus] = React.useState('idle')
+  const [state, setState] = React.useState({
+    status: 'idle',
+    pokemon: null,
+    error: null,
+  })
   // 🐨 use React.useEffect where the callback should be called whenever the
   // pokemon name changes.
   // 🐨 before calling `fetchPokemon`, clear the current pokemon state by setting it to null
   React.useEffect(() => {
     if (!pokemonName) {
-      setStatus('idle')
+      setState({status: 'idle'})
       return
     }
 
-    setStatus('pending')
+    setState({status: 'pending'})
     fetchPokemon(pokemonName)
       .then(pokemonData => {
-        setPokemon(pokemonData)
-        setStatus('resolved')
+        setState(prevState => ({
+          ...prevState,
+          pokemon: pokemonData,
+          status: 'resolved',
+        }))
       })
       .catch(error => {
-        setError(error)
-        setStatus('rejected')
+        setState({error, status: 'rejected'})
       })
   }, [pokemonName])
+
+  const {status, pokemon, error} = state
 
   if (status === 'rejected') {
     return (
