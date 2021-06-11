@@ -2,6 +2,7 @@
 // http://localhost:3000/isolated/exercise/06.js
 
 import * as React from 'react'
+import {ErrorBoundary} from 'react-error-boundary'
 // 🐨 you'll want the following additional things from '../pokemon':
 // fetchPokemon: the function we call to get the pokemon info
 // PokemonInfoFallback: the thing we show while we're loading the pokemon info
@@ -68,29 +69,6 @@ function ErrorFallback({error}) {
   )
 }
 
-class ErrorBoundary extends React.Component {
-  state = {error: null}
-
-  static defaultProps = {
-    FallbackComponent: ErrorFallback,
-  }
-
-  static getDerivedStateFromError(error) {
-    return {error}
-  }
-
-  render() {
-    const {FallbackComponent} = this.props
-    const {error} = this.state
-
-    if (error) {
-      return <FallbackComponent error={error} />
-    }
-
-    return this.props.children
-  }
-}
-
 function App() {
   const [pokemonName, setPokemonName] = React.useState('')
 
@@ -103,7 +81,7 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <ErrorBoundary key={pokemonName}>
+        <ErrorBoundary key={pokemonName} FallbackComponent={ErrorFallback}>
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
       </div>
